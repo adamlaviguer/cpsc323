@@ -18,20 +18,40 @@ int isKeyword(char buffer[]) {
     return flag;
 }
 
-void lexer(char ch) {
-    //char ch;
-    char buffer[15];
-    char operators[] = "+-*/%=!";
-    char separators[] = ";.";
-    char integers[] = "0123456789";
-    int i, j=0;
-    for (i = 0; i < sizeof(operators); i++) {
+void isOperator(char ch, char operators[]) {
+    int i;
+    for (i = 0; i < sizeof(&operators); i++) {
         if (ch == operators[i]) {
             cout<<ch<<" is operator\n";
         }
     }
-    if (isalnum(ch)) {  //checks whether c is either a decimal digit or an uppercase or lowercase letter
-        buffer[j++] = ch;
+}
+
+void isSeparator(char ch, char separators[]) {
+    int i;
+    for (i = 0; i < sizeof(&separators); i++) {
+        if (ch == separators[i]) {
+            cout<<ch<<" is separator\n";
+        }
+    }
+}
+
+void lexer(char ch) {
+    char buffer[15];
+    char operators[] = "+-*/%=!";
+    char separators[] = ";.";
+    char integers[] = "0123456789";
+    int j=0;
+
+    isOperator(ch, operators);
+    isSeparator(ch, separators);
+    //cout<<"Test of ch: "<<ch<<"\n"; //REMOVE THIS BEFORE SUBMISSION
+
+    if (isalnum(ch)) {  //checks whether "ch" is a decimal digit or an uppercase or lowercase letter
+        buffer[j] = ch;
+        //cout<<"Buffer Test: "<<buffer[j]<<"\n"; //REMOVE THIS BEFORE SUBMISSION
+        j++;
+        cout<<j<<"\n";
     }
     else if ((ch == ' ' || ch == '\n') && (j != 0)) {
         buffer[j] = '\0';
