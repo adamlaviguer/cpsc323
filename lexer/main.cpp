@@ -6,7 +6,7 @@
 using namespace std;    //include the standard (std) namespace by default
 
 int isKeyword(char buffer[]) {
-    char keywords[] = {"int"};
+    char keywords[1][10] = {"int"};
     int i, flag = 0;
 
     for (i = 0; i<sizeof(keywords); i++) {
@@ -21,7 +21,7 @@ int isKeyword(char buffer[]) {
 void lexer(char ch) {
     //char ch;
     char buffer[15];
-    char operators[] = "+-*/%=";
+    char operators[] = "+-*/%=!";
     char separators[] = ";.";
     char integers[] = "0123456789";
     int i, j=0;
@@ -57,7 +57,7 @@ int main() {
         return 1;
     }
     else {
-        cout<<"Finished reading the input file.\n";
+        cout<<"Finished reading the input file.\n\n";
     }
     //read from the file until the end of the file is reached
     while (!readFile.eof()) {
@@ -65,8 +65,10 @@ int main() {
         lexer(ch);
     }
 
-    cout<<"Now closing the input file...\n";
+    cout<<"\nNow closing the input file...\n";
     readFile.close();
+    cout<<"Finished closing the input file.\n";
+    /*
     if (readFile.fail()) {
         cout<<"There was an error closing the file. Please check the file then try again.\n";
         return 1;
@@ -74,6 +76,6 @@ int main() {
     else {
         cout<<"Finished closing the input file.\n";
     }
-
+    */
     return 0;
 }
