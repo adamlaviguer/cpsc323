@@ -7,9 +7,9 @@ using namespace std;    //include the standard (std) namespace by default
 
 int isKeyword(char buffer[]) {
     char keywords[1][10] = {"int"};
-    int i, flag = 0;
+    int flag = 0;
 
-    for (i = 0; i<sizeof(keywords); i++) {
+    for (int i = 0; i<sizeof(keywords); i++) {
         if (strcmp(keywords[i], buffer) == 0) {
             flag = 1;
             break;
@@ -19,8 +19,7 @@ int isKeyword(char buffer[]) {
 }
 
 void isOperator(char ch, char operators[]) {
-    int i;
-    for (i = 0; i < sizeof(&operators); i++) {
+    for (int i = 0; i < sizeof(&operators); i++) {
         if (ch == operators[i]) {
             cout<<ch<<" is operator\n";
         }
@@ -28,30 +27,22 @@ void isOperator(char ch, char operators[]) {
 }
 
 void isSeparator(char ch, char separators[]) {
-    int i;
-    for (i = 0; i < sizeof(&separators); i++) {
+    for (int i = 0; i < sizeof(&separators); i++) {
         if (ch == separators[i]) {
             cout<<ch<<" is separator\n";
         }
     }
 }
 
-void lexer(char ch) {
-    char buffer[15];
-    char operators[] = "+-*/%=!";
-    char separators[] = ";.";
+int lexer(char ch, int j) {
+    char buffer[100];
+    char operators[] = "+-*/%=!()";
+    char separators[] = ";.,";
     char integers[] = "0123456789";
-    int j=0;
-
-    isOperator(ch, operators);
-    isSeparator(ch, separators);
-    //cout<<"Test of ch: "<<ch<<"\n"; //REMOVE THIS BEFORE SUBMISSION
 
     if (isalnum(ch)) {  //checks whether "ch" is a decimal digit or an uppercase or lowercase letter
         buffer[j] = ch;
-        //cout<<"Buffer Test: "<<buffer[j]<<"\n"; //REMOVE THIS BEFORE SUBMISSION
         j++;
-        cout<<j<<"\n";
     }
     else if ((ch == ' ' || ch == '\n') && (j != 0)) {
         buffer[j] = '\0';
@@ -64,10 +55,15 @@ void lexer(char ch) {
             cout<<buffer<<" is identifier\n";
         }
     }
+    isOperator(ch, operators);
+    isSeparator(ch, separators);
+
+    return j;
 }
 
 int main() {
     char ch;
+    int j=0;
 
     ifstream readFile;      //create the readFile object to read the contents of the input file
     cout<<"Now reading the input file...\n";
@@ -82,7 +78,7 @@ int main() {
     //read from the file until the end of the file is reached
     while (!readFile.eof()) {
         ch = readFile.get();
-        lexer(ch);
+        j = lexer(ch, j);
     }
 
     cout<<"\nNow closing the input file...\n";
