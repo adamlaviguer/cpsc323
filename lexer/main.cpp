@@ -68,7 +68,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
     char ch;
 
     //add headers to the output file
-    writeFile<<"TOKEN\t\t\t\t\tLEXEMES"<<endl<<endl;
+    writeFile<<setw(20)<<left<<"TOKEN"<<"\t\t"<<"LEXEMES"<<endl<<endl;
 
     //read from the file until the end of the file is reached
     while (!readFile.eof()) {
@@ -87,7 +87,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 4;
                 }
                 if (isComment(ch)) {
-                    writeFile<<"COMMENT\t\t=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"COMMENT"<<"=\t\t"<<ch<<endl;
                     state = 6;
                 }
                 if (isSeparator(ch)) {
@@ -119,10 +119,10 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     buffer[j] = '\0';
                     j = 0;
                     if (isIdentifier(buffer)) {
-                        writeFile<<"IDENTIFIER\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
                     }
                     else {
-                        writeFile<<"KEYWORD\t\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
                     }
                     state = 3;
                 }
@@ -130,34 +130,34 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     buffer[j] = '\0';
                     j = 0;
                     if (isIdentifier(buffer)) {
-                        writeFile<<"IDENTIFIER\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
                     }
                     else {
-                        writeFile<<"KEYWORD\t\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
                     }
-                    writeFile<<"SEPARATOR\t\t=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"SEPARATOR"<<"=\t\t"<<ch<<endl;
                     state = 3;
                 }
                 if (isOperator(ch)) {
                     buffer[j] = '\0';
                     j = 0;
                     if (isIdentifier(buffer)) {
-                        writeFile<<"IDENTIFIER\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
                     }
                     else {
-                        writeFile<<"KEYWORD\t\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
                     }
-                    writeFile<<"OPERATOR\t\t\t=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"OPERATOR"<<"=\t\t"<<ch<<endl;
                     state = 3;
                 }
                 if (isOther(ch)) {
                     buffer[j] = '\0';
                     j = 0;
                     if (isIdentifier(buffer)) {
-                        writeFile<<"IDENTIFIER\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
                     }
                     else {
-                        writeFile<<"KEYWORD\t\t\t=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
                     }
                     state = 3;
                 }
@@ -199,7 +199,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                 else {
                     buffer[j] = '\0';
                     j = 0;
-                    writeFile<<"INTEGER\t\t=\t\t"<<buffer<<endl;
+                    writeFile<<setw(20)<<left<<"INTEGER"<<"=\t\t"<<buffer<<endl;
                     state = 5;
                 }
                 break;
@@ -234,8 +234,8 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
             case 6:
                 if (isComment(ch)) {
                     state = 7;
-                    writeFile<<"CommentBuffer\t\t=\t\t"<<commentBuffer<<endl;
-                    writeFile<<"COMMENT\t\t=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"CommentBuffer"<<"=\t\t"<<commentBuffer<<endl;
+                    writeFile<<setw(20)<<left<<"COMMENT"<<"=\t\t"<<ch<<endl;
                 }
                 else {
                     commentBuffer[k] = ch;

@@ -1,10 +1,10 @@
-TOKEN					LEXEMES
+TOKEN               		LEXEMES
 
-COMMENT		=		!
-CommentBuffer		=		 Declare and assign a number 
-COMMENT		=		!
-KEYWORD			=		int
-IDENTIFIER		=		number
-SEPARATOR		=		;
-IDENTIFIER		=		number
-INTEGER		=		9
+COMMENT             =		!
+CommentBuffer       =		 Declare and assign a number V
+COMMENT             =		!
+KEYWORD             =		int
+IDENTIFIER          =		number
+SEPARATOR           =		;
+IDENTIFIER          =		number
+INTEGER             =		9
