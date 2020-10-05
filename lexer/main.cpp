@@ -87,7 +87,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 4;
                 }
                 if (isComment(ch)) {
-                    writeFile<<"COMMENT\t\t\t=\t\t"<<ch<<endl;
+                    writeFile<<"COMMENT\t\t=\t\t"<<ch<<endl;
                     state = 6;
                 }
                 if (isSeparator(ch)) {
@@ -199,7 +199,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                 else {
                     buffer[j] = '\0';
                     j = 0;
-                    writeFile<<"INTEGER\t\t\t=\t\t"<<buffer<<endl;
+                    writeFile<<"INTEGER\t\t=\t\t"<<buffer<<endl;
                     state = 5;
                 }
                 break;
@@ -234,8 +234,8 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
             case 6:
                 if (isComment(ch)) {
                     state = 7;
-                    writeFile<<"CommentBuffer\t=\t\t"<<commentBuffer<<endl;
-                    writeFile<<"COMMENT\t\t\t=\t\t"<<ch<<endl;
+                    writeFile<<"CommentBuffer\t\t=\t\t"<<commentBuffer<<endl;
+                    writeFile<<"COMMENT\t\t=\t\t"<<ch<<endl;
                 }
                 else {
                     commentBuffer[k] = ch;
