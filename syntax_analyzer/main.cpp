@@ -5,11 +5,11 @@
 
 using namespace std;    //include the standard (std) namespace by default
 
-bool isIdentifier(char buffer[]) {
+bool isIdentifier(char charBuffer[]) {
     char keywords[1][10] = {"int"};
 
     for (int i = 0; i<sizeof(keywords); i++) {
-        if (strcmp(keywords[i], buffer) == 0) {
+        if (strcmp(keywords[i], charBuffer) == 0) {
             return false;
             break;
         }
@@ -61,15 +61,38 @@ bool isOperator(char ch) {
     }
     return false;
 }
+string syntaxAnalyzer(char *synBuffer) {
+    //define the Grammar
+    string result = "Error\n";
+    int pos = sizeof(*synBuffer);
+    if (synBuffer[pos] == '=') {
+        result = "\t<Statement> --> <Assign>\n\t<Assign> --> <Identifier> = <Expression>\n\n";
+        return result;
+    }
+    if (synBuffer[pos] == '+') {
+        result = "\t<Expression> --> <Term> <Expression Prime>\n\t<Term> --> <Factor> <TermPrime>\n\t<Factor> --> <Identifier>\n\n";
+        return result;
+    }
+    if (isLetter(synBuffer[pos])) {
+        result = "\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
+        return result;
+    }
+    if (isSeparator(synBuffer[pos])) {
+        result = "\t<Term> --> <Factor> <TermPrime>\n\t<Factor> --> <Identifier>\n\n";
+        return result;
+    }
+    return result;
+}
 void lexer(ifstream &readFile, ofstream &writeFile) {
     int state = 1;
-    char buffer[100];
+    char charBuffer[100];
+    char synBuffer[100];
     char commentBuffer[1000];
     int j = 0, k = 0;
     char ch;
 
     //add headers to the output file
-    writeFile<<setw(20)<<left<<"TOKEN"<<"\t\t"<<"LEXEMES"<<endl<<endl;
+    //writeFile<<setw(20)<<left<<"TOKEN"<<"\t\t"<<"LEXEMES"<<endl<<endl;
 
     //read from the file until the end of the file is reached
     while (!readFile.eof()) {
@@ -78,111 +101,132 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
         switch (state) {
             case 1:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
+                    synBuffer[j] = ch;
                     j++;
                     state = 2;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 4;
                 }
                 if (isComment(ch)) {
-                    writeFile<<setw(20)<<left<<"COMMENT"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: COMMENT"<<"\t"<<"Lexeme: "<<ch<<endl;
                     state = 6;
                 }
                 if (isSeparator(ch)) {
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    synBuffer[j] = ch;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
-                    writeFile<<setw(20)<<left<<"SEPARATOR"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: SEPARATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                    writeFile<<"\t<Separator> --> <EndSeparator>\n\n";
                     state = 8;
                 }
                 if (isOperator(ch)) {
-                    buffer[j] = '\0';
-                    j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    charBuffer[j] = '\0';
+                    synBuffer[j] = ch;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
-                    writeFile<<setw(20)<<left<<"OPERATOR"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                    writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
+                    for (int i = 0; i < sizeof(*synBuffer); i++) {
+                        synBuffer[i] = '\0';
+                    }
+                    j = 0;
                     state = 9;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
                     state = 1;
                 }
                 break;
             case 2:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 2;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 2;
                 }
                 if (isComment(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
                     else {
-                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
                     state = 3;
                 }
                 if (isSeparator(ch)) {
-                    buffer[j] = '\0';
-                    j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    charBuffer[j] = '\0';
+                    synBuffer[j] = ch;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
                     else {
-                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
-                    writeFile<<setw(20)<<left<<"SEPARATOR"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: SEPARATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                    for (int i = 0; i < sizeof(*synBuffer); i++) {
+                        synBuffer[i] = '\0';
+                    }
+                    j = 0;
                     state = 3;
                 }
                 if (isOperator(ch)) {
-                    buffer[j] = '\0';
-                    j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    charBuffer[j] = '\0';
+                    synBuffer[j] = ch;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
+                        writeFile<<syntaxAnalyzer(synBuffer);
+
                     }
                     else {
-                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
-                    writeFile<<setw(20)<<left<<"OPERATOR"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                    for (int i = 0; i < sizeof(*synBuffer); i++) {
+                        synBuffer[i] = '\0';
+                    }
+                    j = 0;
                     state = 3;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
                     else {
-                        writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
+                        writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
                     state = 3;
                 }
                 break;
             case 3:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
-                    //cout<<ch<<endl;
+                    charBuffer[j] = ch;
+                    synBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
@@ -190,40 +234,38 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 1;
                 }
                 if (isSeparator(ch)) {
-                    // cout<<"Separator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOperator(ch)) {
-                    // cout<<"Operator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
                     state = 1;
                 }
                 break;
             case 4:
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 4;
                 }
                 else {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
-                    writeFile<<setw(20)<<left<<"INTEGER"<<"=\t\t"<<buffer<<endl;
+                    writeFile<<setw(20)<<left<<"Token: INTEGER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     state = 5;
                 }
                 break;
             case 5:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
@@ -231,15 +273,13 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 1;
                 }
                 if (isSeparator(ch)) {
-                    // cout<<"Separator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOperator(ch)) {
-                    // cout<<"Operator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
                     state = 1;
                 }
@@ -247,8 +287,8 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
             case 6:
                 if (isComment(ch)) {
                     state = 7;
-                    writeFile<<setw(20)<<left<<"CommentBuffer"<<"=\t\t"<<commentBuffer<<endl;
-                    writeFile<<setw(20)<<left<<"COMMENT"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Comment Buffer:"<<"\t"<<commentBuffer<<endl;
+                    writeFile<<setw(20)<<left<<"Token: COMMENT"<<"\t"<<"Lexeme: "<<ch<<endl;
                 }
                 else {
                     commentBuffer[k] = ch;
@@ -258,12 +298,12 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                 break;
             case 7:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
@@ -271,27 +311,25 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 1;
                 }
                 if (isSeparator(ch)) {
-                    // cout<<"Separator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOperator(ch)) {
-                    // cout<<"Operator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
                     state = 1;
                 }
                 break;
             case 8:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
@@ -299,27 +337,26 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 1;
                 }
                 if (isSeparator(ch)) {
-                    // cout<<"Separator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOperator(ch)) {
-                    // cout<<"Operator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
                     state = 1;
                 }
                 break;
             case 9:
                 if (isLetter(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
+                    synBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
                 if (isInteger(ch)) {
-                    buffer[j] = ch;
+                    charBuffer[j] = ch;
                     j++;
                     state = 1;
                 }
@@ -327,33 +364,25 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     state = 1;
                 }
                 if (isSeparator(ch)) {
-                    // cout<<"Separator: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOperator(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
-                    if (isIdentifier(buffer)) {
-                        writeFile<<setw(20)<<left<<"IDENTIFIER"<<"=\t\t"<<buffer<<endl;
+                    if (isIdentifier(charBuffer)) {
+                        writeFile<<setw(20)<<left<<"Token: IDENTIFIER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     }
-                    // else {
-                    //     writeFile<<setw(20)<<left<<"KEYWORD"<<"=\t\t"<<buffer<<endl;
-                    // }
-                    writeFile<<setw(20)<<left<<"OPERATOR"<<"=\t\t"<<ch<<endl;
+                    writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
                     state = 1;
                 }
                 if (isOther(ch)) {
-                    buffer[j] = '\0';
+                    charBuffer[j] = '\0';
                     j = 0;
                     state = 1;
                 }
                 break;
         }
     }
-}
-
-void syntaxAnalyzer() {
-
 }
 
 int main() {
