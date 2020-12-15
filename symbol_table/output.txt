@@ -1,0 +1,22 @@
+Token: IDENTIFIER   	Lexeme: a
+	<Statement> --> <Assign>
+	<Assign> --> <Identifier> = <Expression>
+
+Token: OPERATOR     	Lexeme: =
+Token: IDENTIFIER   	Lexeme: b
+	<Expression> --> <Term> <Expression Prime>
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
+Token: OPERATOR     	Lexeme: +
+	<TermPrime> --> <Empty>
+	<ExpressionPrime> --> + <Term> <ExpressionPrime>
+	<Empty> --> <Epsilon>
+
+Token: IDENTIFIER   	Lexeme: c
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
+Token: SEPARATOR    	Lexeme: ;
+	<Separator> --> <EndSeparator>
+
