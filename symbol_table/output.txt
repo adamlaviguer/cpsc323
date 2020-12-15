@@ -1,22 +1,28 @@
+Token: KEYWORD      	Lexeme: int
 Token: IDENTIFIER   	Lexeme: a
-	<Statement> --> <Assign>
-	<Assign> --> <Identifier> = <Expression>
-
+Token: SEPARATOR    	Lexeme: ,
+Token: IDENTIFIER   	Lexeme: b
+Token: SEPARATOR    	Lexeme: ,
+Token: IDENTIFIER   	Lexeme: c
+Token: SEPARATOR    	Lexeme: ;
+Token: IDENTIFIER   	Lexeme: b
+Token: OPERATOR     	Lexeme: =
+Token: INTEGER      	Lexeme: 5
+Token: SEPARATOR    	Lexeme: ;
+Token: IDENTIFIER   	Lexeme: c
+Token: OPERATOR     	Lexeme: =
+Token: INTEGER      	Lexeme: 10
+Token: SEPARATOR    	Lexeme: ;
+Token: IDENTIFIER   	Lexeme: a
 Token: OPERATOR     	Lexeme: =
 Token: IDENTIFIER   	Lexeme: b
-	<Expression> --> <Term> <Expression Prime>
-	<Term> --> <Factor> <TermPrime>
-	<Factor> --> <Identifier>
-
 Token: OPERATOR     	Lexeme: +
-	<TermPrime> --> <Empty>
-	<ExpressionPrime> --> + <Term> <ExpressionPrime>
-	<Empty> --> <Epsilon>
-
 Token: IDENTIFIER   	Lexeme: c
-	<Term> --> <Factor> <TermPrime>
-	<Factor> --> <Identifier>
-
 Token: SEPARATOR    	Lexeme: ;
-	<Separator> --> <EndSeparator>
 
+------------------SYMBOL TABLE------------------
+Identifier		Memory Location
+a         		5000
+b         		5001
+c         		5002
+          		
