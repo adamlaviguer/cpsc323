@@ -191,6 +191,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
                             }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
+                            }
                             lastWasKeyword = true;
                         }
                         //writeFile<<syntaxAnalyzer(synBuffer);
@@ -223,6 +226,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                         else if (lastWasKeyword && ch == ',') {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
+                            }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
                             }
                             lastWasKeyword = true;
                         }
@@ -262,6 +268,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
                             }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
+                            }
                             lastWasKeyword = true;
                         }
                     }
@@ -288,6 +297,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                         else if (lastWasKeyword && ch == ',') {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
+                            }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
                             }
                             lastWasKeyword = true;
                         }
@@ -322,6 +334,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
                             }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
+                            }
                             lastWasKeyword = true;
                         }
                         //writeFile<<syntaxAnalyzer(synBuffer);
@@ -354,6 +369,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                         else if (lastWasKeyword && ch == ',') {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
+                            }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
                             }
                             lastWasKeyword = true;
                         }
@@ -573,6 +591,9 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                         else if (lastWasKeyword && ch == ',') {
                             if (checkSymbolTable(charBuffer)) {
                                 updateSymbolTable(charBuffer);
+                            }
+                            else {
+                                cout<<"Error: That Identifier Already Exists"<<endl;
                             }
                             lastWasKeyword = true;
                         }
