@@ -9,11 +9,11 @@ using namespace std;    //include the standard (std) namespace by default
 //GLOBAL VARIABLES
 int Memory_Address = 5000;
 int symbolRow = 0;
-int assemblyRow = 0;
+//int assemblyRow = 0;
 // string assemblyArray[18][2] = {{"1", "PUSHI"},{"2", "PUSHM"},{"3", "POPM"},{"4", "STDOUT"},{"5", "STDIN"},{"6", "ADD"},
 //                                 {"7", "SUB"},{"8", "MUL"},{"9", "DIV"},{"10", "GRT"},{"11", "LES"},{"12", "EQU"},
 //                                 {"13", "NEQ"},{"14", "GEQ"},{"15", "LEQ"},{"16", "JUMPZ"},{"17", "JUMP"},{"18", "LABEL"}};
-string assembly_table[10][3];
+//string assembly_table[10][3];
 string symbol_table[3][2] = {{"", ""},{"",""},{"",""}};
 bool lastWasKeyword = false;
 
