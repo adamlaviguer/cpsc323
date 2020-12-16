@@ -1,24 +1,64 @@
 Token: KEYWORD      	Lexeme: int
 Token: IDENTIFIER   	Lexeme: a
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
 Token: SEPARATOR    	Lexeme: ,
+	<Separator> --> <EndSeparator>
+
 Token: IDENTIFIER   	Lexeme: b
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
 Token: SEPARATOR    	Lexeme: ,
+	<Separator> --> <EndSeparator>
+
 Token: IDENTIFIER   	Lexeme: c
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
 Token: SEPARATOR    	Lexeme: ;
+	<Separator> --> <EndSeparator>
+
 Token: IDENTIFIER   	Lexeme: b
 Token: OPERATOR     	Lexeme: =
+	<TermPrime> --> <Empty>
+	<ExpressionPrime> --> + <Term> <ExpressionPrime>
+	<Empty> --> <Epsilon>
+
 Token: INTEGER      	Lexeme: 5
 Token: SEPARATOR    	Lexeme: ;
+	<Separator> --> <EndSeparator>
+
 Token: IDENTIFIER   	Lexeme: c
 Token: OPERATOR     	Lexeme: =
+	<TermPrime> --> <Empty>
+	<ExpressionPrime> --> + <Term> <ExpressionPrime>
+	<Empty> --> <Epsilon>
+
 Token: INTEGER      	Lexeme: 10
 Token: SEPARATOR    	Lexeme: ;
+	<Separator> --> <EndSeparator>
+
 Token: IDENTIFIER   	Lexeme: a
 Token: OPERATOR     	Lexeme: =
+	<TermPrime> --> <Empty>
+	<ExpressionPrime> --> + <Term> <ExpressionPrime>
+	<Empty> --> <Epsilon>
+
 Token: IDENTIFIER   	Lexeme: b
 Token: OPERATOR     	Lexeme: +
+	<TermPrime> --> <Empty>
+	<ExpressionPrime> --> + <Term> <ExpressionPrime>
+	<Empty> --> <Epsilon>
+
 Token: IDENTIFIER   	Lexeme: c
+	<Term> --> <Factor> <TermPrime>
+	<Factor> --> <Identifier>
+
 Token: SEPARATOR    	Lexeme: ;
+	<Separator> --> <EndSeparator>
+
 
 ------------------SYMBOL TABLE------------------
 Identifier		Memory Location

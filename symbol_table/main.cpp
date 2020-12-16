@@ -2,15 +2,18 @@
 #include <iomanip>  //for formatting I/O
 #include <iostream> //for input/output in the command line
 #include <cstring>  //for comparing strings with "strcmp"
+#include <string>
 
 using namespace std;    //include the standard (std) namespace by default
 
 //GLOBAL VARIABLES
 int Memory_Address = 5000;
-int tableRow = 0;
-string assemblyArray[18][2] = {{"1", "PUSHI"},{"2", "PUSHM"},{"3", "POPM"},{"4", "STDOUT"},{"5", "STDIN"},{"6", "ADD"},
-                                {"7", "SUB"},{"8", "MUL"},{"9", "DIV"},{"10", "GRT"},{"11", "LES"},{"12", "EQU"},
-                                {"13", "NEQ"},{"14", "GEQ"},{"15", "LEQ"},{"16", "JUMPZ"},{"17", "JUMP"},{"18", "LABEL"}};
+int symbolRow = 0;
+int assemblyRow = 0;
+// string assemblyArray[18][2] = {{"1", "PUSHI"},{"2", "PUSHM"},{"3", "POPM"},{"4", "STDOUT"},{"5", "STDIN"},{"6", "ADD"},
+//                                 {"7", "SUB"},{"8", "MUL"},{"9", "DIV"},{"10", "GRT"},{"11", "LES"},{"12", "EQU"},
+//                                 {"13", "NEQ"},{"14", "GEQ"},{"15", "LEQ"},{"16", "JUMPZ"},{"17", "JUMP"},{"18", "LABEL"}};
+string assembly_table[10][3];
 string symbol_table[3][2] = {{"", ""},{"",""},{"",""}};
 bool lastWasKeyword = false;
 
@@ -25,10 +28,10 @@ bool checkSymbolTable(char charBuffer[]) {
     return true;
 }
 void updateSymbolTable(char charBuffer[]) {
-    symbol_table[tableRow][0] = charBuffer;
-    symbol_table[tableRow][1] = to_string(Memory_Address);
+    symbol_table[symbolRow][0] = charBuffer;
+    symbol_table[symbolRow][1] = to_string(Memory_Address);
     Memory_Address += 1;
-    tableRow += 1;
+    symbolRow += 1;
 }
 bool isIdentifier(char charBuffer[]) {
     char keywords[1][10] = {"int"};
@@ -107,9 +110,11 @@ string syntaxAnalyzer(char *synBuffer) {
     }
     return result;
 }
-void writeAssembly(ofstream &writeFile) {
-    
-}
+// void writeAssembly(ofstream &writeFile) {
+//     for (int row = 0; row < 10; row++) {
+//         writeFile<<setw(10)<<left<<assembly_table[row][0]<<"\t\t"<<assembly_table[row][1]<<"\t\t"<<assembly_table[row][2]<<endl;
+//     }
+// }
 void writeSymbolTable(ofstream &writeFile) {
     writeFile<<"\n------------------SYMBOL TABLE------------------"<<endl<<setw(10)<<left<<"Identifier"<<"\t\t"<<"Memory Location"<<endl;
     for (int row = 0; row < 4; row++) {
@@ -167,10 +172,10 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             }
                             lastWasKeyword = true;
                         }
-                        //writeFile<<syntaxAnalyzer(synBuffer);
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
                     writeFile<<setw(20)<<left<<"Token: SEPARATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
-                    //writeFile<<"\t<Separator> --> <EndSeparator>\n\n";
+                    writeFile<<"\t<Separator> --> <EndSeparator>\n\n";
                     state = 8;
                 }
                 if (isOperator(ch)) {
@@ -196,10 +201,10 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             }
                             lastWasKeyword = true;
                         }
-                        //writeFile<<syntaxAnalyzer(synBuffer);
+                        syntaxAnalyzer(synBuffer);
                     }
                     writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
-                    //writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
+                    writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
                     for (int i = 0; i < sizeof(*synBuffer); i++) {
                         synBuffer[i] = '\0';
                     }
@@ -303,13 +308,14 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             }
                             lastWasKeyword = true;
                         }
-                        //writeFile<<syntaxAnalyzer(synBuffer);
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
                     else {
                         writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                         lastWasKeyword = true;
                     }
                     writeFile<<setw(20)<<left<<"Token: SEPARATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                    writeFile<<"\t<Separator> --> <EndSeparator>\n\n";
                     for (int i = 0; i < sizeof(*synBuffer); i++) {
                         synBuffer[i] = '\0';
                     }
@@ -339,7 +345,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                             }
                             lastWasKeyword = true;
                         }
-                        //writeFile<<syntaxAnalyzer(synBuffer);
+                        writeFile<<syntaxAnalyzer(synBuffer);
                     }
                     else {
                         writeFile<<setw(20)<<left<<"Token: KEYWORD"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
@@ -408,7 +414,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     charBuffer[j] = '\0';
                     synBuffer[j] = ch;
                     writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
-                    //writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
+                    writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
                     for (int i = 0; i < sizeof(*synBuffer); i++) {
                         synBuffer[i] = '\0';
                     }
@@ -439,6 +445,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     writeFile<<setw(20)<<left<<"Token: INTEGER"<<"\t"<<"Lexeme: "<<charBuffer<<endl;
                     if (isSeparator(ch)) {
                         writeFile<<setw(20)<<left<<"Token: SEPARATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
+                        writeFile<<"\t<Separator> --> <EndSeparator>\n\n";
                     }
                     for (int i = 0; i < sizeof(charBuffer); i++) {
                         charBuffer[i] = '\0';
@@ -467,7 +474,7 @@ void lexer(ifstream &readFile, ofstream &writeFile) {
                     charBuffer[j] = '\0';
                     synBuffer[j] = ch;
                     writeFile<<setw(20)<<left<<"Token: OPERATOR"<<"\t"<<"Lexeme: "<<ch<<endl;
-                    //writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
+                    writeFile<<"\t<TermPrime> --> <Empty>\n\t<ExpressionPrime> --> + <Term> <ExpressionPrime>\n\t<Empty> --> <Epsilon>\n\n";
                     for (int i = 0; i < sizeof(*synBuffer); i++) {
                         synBuffer[i] = '\0';
                     }
@@ -632,7 +639,7 @@ int main() {
         return 1;
     }
     lexer(readFile, writeFile); //call the lexer function
-    writeAssembly(writeFile);
+    //writeAssembly(writeFile);
     writeSymbolTable(writeFile);
     cout<<"Now writing to the output file...\n";
     cout<<"\nNow closing all files...\n";
